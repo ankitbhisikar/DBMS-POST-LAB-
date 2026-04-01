@@ -3,15 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EduAura | Online Course Management System</title>
-    <!-- Fonts -->
+    <title>QueryAcademy | Online Course Management System</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono&display=swap" rel="stylesheet">
-    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- SQL.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.3/sql-wasm.js"></script>
     <style>
-        /* (Same CSS as before – included for completeness) */
+        /* (All CSS from your previous version – same as you provided) */
         :root {
             --accent: #14b8a6;
             --accent-hover: #2dd4bf;
@@ -28,7 +25,6 @@
             --guide-bg: #0f172a;
             --visualizer-bg: #0c0c14;
         }
-
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
@@ -42,7 +38,6 @@
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: var(--card); }
         ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 10px; }
-
         .hdr {
             height: 70px;
             background: rgba(17, 24, 39, 0.9);
@@ -83,10 +78,6 @@
             color: var(--accent);
             border-color: rgba(20, 184, 166, 0.5);
             background: rgba(20, 184, 166, 0.08);
-        }
-        .status-pill.warning {
-            color: var(--warning);
-            border-color: rgba(245, 158, 11, 0.3);
         }
         .btn-sync {
             background: var(--accent);
@@ -255,7 +246,6 @@
             resize: none;
             padding: 20px;
         }
-        /* Visualizer styles (same as before) */
         .visualizer-container {
             background: var(--card);
             border-radius: 28px;
@@ -439,7 +429,6 @@
     </style>
 </head>
 <body>
-
 <nav class="hdr">
     <div class="logo"><i class="fas fa-chalkboard-user"></i> Query<span style="color:var(--accent);">Academy</span> | Education HUB</div>
     <div style="display:flex; align-items:center; gap:20px;">
@@ -463,7 +452,6 @@
             <div class="tab" id="tViz" onclick="setMode('viz')">🔍 QUERY LOGIC VISUALIZER</div>
         </div>
 
-        <!-- Explorer Section -->
         <div id="secExp">
             <div class="view-hdr">
                 <div>
@@ -480,7 +468,6 @@
             </div>
         </div>
 
-        <!-- Studio Section -->
         <div id="secStd" style="display:none;">
             <div class="studio">
                 <div style="display:flex; justify-content:space-between; align-items:center;">
@@ -498,7 +485,6 @@
             </div>
         </div>
 
-        <!-- Guide Section -->
         <div id="secGuide" style="display:none;">
             <div class="guide-container" style="background:var(--card); border-radius:28px; border:1px solid var(--border); padding:32px;">
                 <h3 style="color:var(--accent); margin-bottom:20px;"><i class="fas fa-graduation-cap"></i> SQL Learning Guide</h3>
@@ -506,7 +492,6 @@
             </div>
         </div>
 
-        <!-- Query Logic Visualizer Tab -->
         <div id="secViz" style="display:none;">
             <div class="visualizer-container">
                 <div class="viz-header">
@@ -534,11 +519,10 @@
 <script>
     let db;
     let active = "";
-    const API_BASE = (window.location.protocol === 'file:') ? 'http://localhost:5500' : '';
+    const API_BASE = ''; // relative URL (same origin)
     const SQL_VERSION = '1.10.3';
-    let currentStaticMode = false;
+    let currentQuery = "select";
 
-    // Visualization data (same as before)
     const queryVisualizations = {
         select: {
             title: "SELECT Query Logic",
@@ -550,10 +534,8 @@
                 { num: 4, title: "PROJECTION (SELECT Columns)", desc: "Only the specified columns (Course_ID, Title, Category, Status) are returned, not all columns." },
                 { num: 5, title: "RESULT SET", desc: "Final filtered data is returned to the user." }
             ],
-            previewData: [
-                { Course_ID: 101, Title: "Introduction to Algorithms", Category: "Computer Science", Status: "Active" }
-            ],
-            explanation: "SELECT queries retrieve data from tables. The WHERE clause filters rows based on a condition. Only rows that satisfy the condition are included in the result."
+            previewData: [{ Course_ID: 101, Title: "Introduction to Algorithms", Category: "Computer Science", Status: "Active" }],
+            explanation: "SELECT queries retrieve data from tables. The WHERE clause filters rows based on a condition."
         },
         join: {
             title: "JOIN Query Logic (INNER JOIN)",
@@ -581,9 +563,7 @@
                 { num: 4, title: "INSERT ROW", desc: "New row is added to the table. Auto-increment columns get generated automatically." },
                 { num: 5, title: "COMMIT TRANSACTION", desc: "Changes are permanently saved." }
             ],
-            previewData: [
-                { Student_ID: 503, Name: "Emily Chen", Gender: "Female", Major: "Data Science", Course_ID: 101 }
-            ],
+            previewData: [{ Student_ID: 503, Name: "Emily Chen", Gender: "Female", Major: "Data Science", Course_ID: 101 }],
             explanation: "INSERT adds new rows to a table. Values must match column data types. Auto-increment columns generate unique values automatically."
         },
         update: {
@@ -596,9 +576,7 @@
                 { num: 4, title: "MODIFY DATA", desc: "The Status column is updated from its current value to 'Completed'." },
                 { num: 5, title: "COMMIT", desc: "Changes are saved." }
             ],
-            previewData: [
-                { Course_ID: 101, Title: "Introduction to Algorithms", Category: "Computer Science", Status: "Completed" }
-            ],
+            previewData: [{ Course_ID: 101, Title: "Introduction to Algorithms", Category: "Computer Science", Status: "Completed" }],
             explanation: "UPDATE modifies existing data. The WHERE clause determines which rows are updated. Without WHERE, ALL rows would be updated!"
         },
         delete: {
@@ -624,15 +602,10 @@
                 { num: 4, title: "AGGREGATION", desc: "COUNT(*) is applied to each group, counting rows per category." },
                 { num: 5, title: "RESULT SET", desc: "Returns one row per group with category name and course count." }
             ],
-            previewData: [
-                { Category: "Computer Science", CourseCount: 1 },
-                { Category: "Mathematics", CourseCount: 1 }
-            ],
+            previewData: [{ Category: "Computer Science", CourseCount: 1 }, { Category: "Mathematics", CourseCount: 1 }],
             explanation: "GROUP BY groups rows that have the same values in specified columns. Aggregate functions calculate values for each group."
         }
     };
-
-    let currentQuery = "select";
 
     function visualizeQuery(queryType) {
         currentQuery = queryType;
@@ -675,7 +648,6 @@
         }, 300);
     }
 
-    // Core functions (modified to load schema from external SQL file)
     async function init() {
         try {
             if (typeof initSqlJs !== 'function') {
@@ -693,17 +665,18 @@
         try {
             document.getElementById('stat').innerHTML = '<i class="fas fa-spinner fa-pulse"></i> SYNCING...';
             let schemaText = "";
-            // Attempt to load schema.sql from the same directory
             try {
-                const response = await fetch('schema.sql');
+                const response = await fetch('/api/get-schema');
                 if (response.ok) {
-                    schemaText = await response.text();
+                    const data = await response.json();
+                    if (data.success) schemaText = data.schema;
+                    else throw new Error(data.error);
                 } else {
-                    throw new Error('schema.sql not found');
+                    throw new Error('Backend not reachable');
                 }
             } catch (fetchErr) {
-                console.warn("Could not fetch schema.sql, using fallback embedded schema.");
-                schemaText = getFallbackSchema(); // fallback in case file missing
+                console.warn("Could not fetch from backend, using fallback schema.");
+                schemaText = getFallbackSchema();
             }
             db = new window.SQL.Database();
             const statements = schemaText.split(/;\s*\n/);
@@ -712,6 +685,7 @@
                     try { db.run(stmt); } catch(e) { console.warn("Statement error:", e.message); }
                 }
             }
+            // Restore session changes from localStorage (for offline fallback)
             if (localStorage.getItem('aura_session_sql')) {
                 const cachedSql = JSON.parse(localStorage.getItem('aura_session_sql'));
                 if (Array.isArray(cachedSql)) {
@@ -730,13 +704,12 @@
         }
     }
 
-    // Fallback schema (identical to schema.sql)
     function getFallbackSchema() {
-        return `-- Online Course Management System Database Schema
-CREATE TABLE IF NOT EXISTS Instructor ( Instructor_ID INTEGER PRIMARY KEY AUTOINCREMENT, Name VARCHAR(100), Email VARCHAR(100), Phone VARCHAR(20), Specialization VARCHAR(100), Hire_Date DATE);
+        return `CREATE TABLE IF NOT EXISTS Instructor ( Instructor_ID INTEGER PRIMARY KEY AUTOINCREMENT, Name VARCHAR(100), Email VARCHAR(100), Phone VARCHAR(20), Specialization VARCHAR(100), Hire_Date DATE);
 CREATE TABLE IF NOT EXISTS Course ( Course_ID INTEGER PRIMARY KEY AUTOINCREMENT, Title VARCHAR(200), Category VARCHAR(50), Status VARCHAR(50), Start_Date DATE, End_Date DATE, Instructor_ID INT);
 CREATE TABLE IF NOT EXISTS Department ( Dept_ID INTEGER PRIMARY KEY AUTOINCREMENT, Dept_Name VARCHAR(100), Location VARCHAR(100), Established_Year INT, Course_ID INT);
 CREATE TABLE IF NOT EXISTS Student ( Student_ID INTEGER PRIMARY KEY AUTOINCREMENT, Name VARCHAR(100), Gender VARCHAR(10), Major VARCHAR(100), Course_ID INT);
+CREATE TABLE IF NOT EXISTS Assignment ( Assignment_ID INTEGER PRIMARY KEY AUTOINCREMENT, Title VARCHAR(200) NOT NULL, Description TEXT, Due_Date DATE, Max_Score INT, Course_ID INT);
 INSERT OR IGNORE INTO Instructor VALUES (1, 'Dr. Alan Turing', 'alan@cs.edu', '555-0100', 'Computer Science', '2018-08-15');
 INSERT OR IGNORE INTO Instructor VALUES (2, 'Prof. Ada Lovelace', 'ada@math.edu', '555-0200', 'Mathematics', '2015-01-20');
 INSERT OR IGNORE INTO Course VALUES (101, 'Introduction to Algorithms', 'Computer Science', 'Active', '2024-09-01', '2024-12-15', 1);
@@ -745,6 +718,37 @@ INSERT OR IGNORE INTO Department VALUES (201, 'Computer Science', 'Science Build
 INSERT OR IGNORE INTO Department VALUES (202, 'Mathematics', 'Science Building B', 1970, 102);
 INSERT OR IGNORE INTO Student VALUES (501, 'Grace Hopper', 'Female', 'Computer Science', 101);
 INSERT OR IGNORE INTO Student VALUES (502, 'John von Neumann', 'Male', 'Mathematics', 102);`;
+    }
+
+    async function persist(sql) {
+        const writeKeywords = ["INSERT", "UPDATE", "DELETE", "CREATE", "DROP", "ALTER"];
+        const isWrite = writeKeywords.some(kw => sql.toUpperCase().includes(kw));
+        if (!isWrite) return;
+
+        // Try to persist to backend first
+        try {
+            const response = await fetch('/api/persist', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ sql: sql })
+            });
+            if (response.ok) {
+                console.log("✅ Persisted to backend SQL file.");
+            } else {
+                console.warn("Backend persist failed, using localStorage fallback.");
+                // Fallback to localStorage
+                const sessionKey = 'aura_session_sql';
+                const existing = JSON.parse(localStorage.getItem(sessionKey) || "[]");
+                existing.push(sql);
+                localStorage.setItem(sessionKey, JSON.stringify(existing));
+            }
+        } catch (e) {
+            console.warn("Backend unreachable, using localStorage fallback.");
+            const sessionKey = 'aura_session_sql';
+            const existing = JSON.parse(localStorage.getItem(sessionKey) || "[]");
+            existing.push(sql);
+            localStorage.setItem(sessionKey, JSON.stringify(existing));
+        }
     }
 
     function refreshSide() {
@@ -766,9 +770,30 @@ INSERT OR IGNORE INTO Student VALUES (502, 'John von Neumann', 'Male', 'Mathemat
         if(res.length) document.getElementById('gridBody').innerHTML=res[0].values.map(r=>`<tr>${r.map(v=>`<td>${v??'∅'}</td>`).join('')}<td><button class="btn-plus" style="padding:4px 12px;" onclick="delRec('${active}','${cols[0]}','${r[0]}')"><i class="fas fa-trash-alt"></i></button></td></tr>`).join(''); 
         else document.getElementById('gridBody').innerHTML='<tr><td colspan="100" class="empty-state">Empty</td></tr>';
     }
-    async function delRec(t,pk,id){ if(confirm("Delete?")){ db.run(`DELETE FROM ${t} WHERE ${pk}='${id}'`); renderTable(); } }
-    async function addRec(t){ alert("Use Studio tab for inserts"); }
-    async function runStudio(){ if(!db) return; const sql=document.getElementById('code').value; try{ const res=db.exec(sql); if(res.length){ document.getElementById('resBox').style.display='block'; document.getElementById('resHead').innerHTML=`<tr>${res[0].columns.map(c=>`<th>${c}</th>`).join('')}</tr>`; document.getElementById('resBody').innerHTML=res[0].values.map(r=>`<tr>${r.map(v=>`<td>${v??'NULL'}</td>`).join('')}</tr>`).join(''); } else alert("Executed."); if(active) renderTable(); } catch(e){ alert("SQL Error: "+e.message); } }
+    async function delRec(t,pk,id){ if(confirm("Delete?")){ const sql=`DELETE FROM ${t} WHERE ${pk}='${id}'`; db.run(sql); renderTable(); await persist(sql); } }
+    async function addRec(t){ 
+        const meta = db.exec(`PRAGMA table_info(${t})`)[0]?.values;
+        if(!meta) return;
+        const cols = meta.map(v=>v[1]);
+        let insertCols = [], insertVals = [];
+        for(let c of cols){
+            let val = prompt(`Enter value for ${c} (leave empty for NULL):`);
+            if(val === null) return;
+            if(val.trim() !== ""){
+                insertCols.push(c);
+                insertVals.push(`'${val.replace(/'/g,"''")}'`);
+            }
+        }
+        if(insertCols.length===0){ alert("No data entered."); return; }
+        const sql = `INSERT INTO ${t} (${insertCols.join(',')}) VALUES (${insertVals.join(',')})`;
+        try{
+            db.run(sql);
+            renderTable();
+            await persist(sql);
+            alert("Record added!");
+        } catch(e){ alert("Insert error: "+e.message); }
+    }
+    async function runStudio(){ if(!db) return; const sql=document.getElementById('code').value; try{ const res=db.exec(sql); if(res.length){ document.getElementById('resBox').style.display='block'; document.getElementById('resHead').innerHTML=`<tr>${res[0].columns.map(c=>`<th>${c}</th>`).join('')}</tr>`; document.getElementById('resBody').innerHTML=res[0].values.map(r=>`<tr>${r.map(v=>`<td>${v??'NULL'}</td>`).join('')}</tr>`).join(''); } else alert("Executed."); await persist(sql); if(active) renderTable(); } catch(e){ alert("SQL Error: "+e.message); } }
     function setMode(m){
         document.getElementById('secExp').style.display=m==='exp'?'block':'none';
         document.getElementById('secStd').style.display=m==='std'?'block':'none';
@@ -783,7 +808,7 @@ INSERT OR IGNORE INTO Student VALUES (502, 'John von Neumann', 'Male', 'Mathemat
     function downloadDB() {
         if(!db) return;
         const sessionSql = JSON.parse(localStorage.getItem('aura_session_sql') || "[]");
-        let fullExport = "-- EduAura Full Export\n";
+        let fullExport = "-- QueryAcademy Full Export\n";
         const tables = db.exec("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'");
         if(tables.length) for(let t of tables[0].values.flat()){
             const createRes = db.exec(`SELECT sql FROM sqlite_master WHERE type='table' AND name='${t}'`);
@@ -793,7 +818,7 @@ INSERT OR IGNORE INTO Student VALUES (502, 'John von Neumann', 'Male', 'Mathemat
         const blob = new Blob([fullExport], { type: 'text/sql' });
         const a = document.createElement('a');
         a.href = URL.createObjectURL(blob);
-        a.download = `aura_export_${new Date().toISOString().slice(0,19)}.sql`;
+        a.download = `queryacademy_export_${new Date().toISOString().slice(0,19)}.sql`;
         a.click();
         alert("✅ Export complete.");
     }

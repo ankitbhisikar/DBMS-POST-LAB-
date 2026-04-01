@@ -1,5 +1,5 @@
 -- Online Course Management System Database Schema
--- Version: 2.0 (EduAura)
+-- Version: 2.0 (QueryAcademy)
 
 -- 1. Instructor Table
 CREATE TABLE IF NOT EXISTS Instructor ( 
@@ -43,7 +43,18 @@ CREATE TABLE IF NOT EXISTS Student (
     FOREIGN KEY (Course_ID) REFERENCES Course(Course_ID)
 );
 
--- Sample Data
+-- 5. NEW EMPTY TABLE: Assignment (for practice)
+CREATE TABLE IF NOT EXISTS Assignment (
+    Assignment_ID INTEGER PRIMARY KEY AUTOINCREMENT,
+    Title VARCHAR(200) NOT NULL,
+    Description TEXT,
+    Due_Date DATE,
+    Max_Score INT,
+    Course_ID INT,
+    FOREIGN KEY (Course_ID) REFERENCES Course(Course_ID)
+);
+
+-- Sample Data (existing)
 INSERT OR IGNORE INTO Instructor (Instructor_ID, Name, Email, Phone, Specialization, Hire_Date) 
 VALUES (1, 'Dr. Alan Turing', 'alan@cs.edu', '555-0100', 'Computer Science', '2018-08-15');
 
